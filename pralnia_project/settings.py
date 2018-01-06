@@ -130,3 +130,5 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 
 )
+
+#from prod_settings import *
