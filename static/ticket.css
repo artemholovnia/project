@@ -1,0 +1,52 @@
+<!--  -->
+a{
+    text-decoration: none;
+}
+
+a.light{
+    color: #ffffff;
+}
+
+a.dark{
+    color: black;
+}
+
+ul{
+    padding: 0;
+    margin: 0;
+}
+
+li{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+label{
+    color: #5bc0de;
+    padding: 0px 10px;
+}
+
+.btn{
+    margin: 5px 5px;
+}
+
+#auth{
+    padding: 10px 20px;
+    text-align: right;
+    color: #ffffff;
+}
+
+#nav{
+    padding: 10px 10px;
+}
+
+#find{
+    padding: 10px 0px;
+    display: block;
+}
+
+<!---->
+#small_symbols{
+    font-size: 12px;
+}

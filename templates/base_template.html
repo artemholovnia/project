@@ -1,0 +1,43 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'ticket.css' %}">
+</head>
+<body>
+<div class="row">
+<div class="col alert alert-success">DEVELOPEMENT <a href="https://github.com/artemholovnia/project" class="alert-link">github</a></div>
+</div>
+{% if user.is_authenticated %}
+<div id="auth" class="bg-info">
+    <a href="{% url 'logout' %}" class="light">Wylogować ({{ worker.user.username }}, {{ worker.position.title }})</a>
+</div>
+<div id="nav" class="fa-mobile-phone">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_ticket' %}">Dodaj kwit</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'all_tickets' %}">Dostępne kwity</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">API</a>
+        </li>
+    </ul>
+</div>
+
+{% endif %}
+
+{% block content %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

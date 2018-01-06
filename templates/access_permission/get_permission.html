@@ -1,0 +1,8 @@
+{% extends 'access_permission/base_template.html' %}
+
+{% block title %}Access permission{% endblock %}
+
+{% block content %}
+    <h2>Twoje prawa dostępu: {{ user_permission }}</h2>
+    <a href="{{ redirect_url }}"><button class="btn btn-success">Przejdż do zarządzania</button></a>
+{% endblock %}

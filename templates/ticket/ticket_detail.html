@@ -1,0 +1,201 @@
+{% extends 'base_template.html' %}
+{% block title %}Detail {{ ticket.ticket_number }}{% endblock %}
+{% block content %}
+    <div class="container">
+
+        <div class="row">
+            <div class="col-12"><h2>Informacja zlecenia</h2></div>
+        </div>
+
+        <div class="row">
+            <div class="col-9">
+                <table class="table table-bordered">
+                    <thead class="table">
+                        <th></th>
+                        <th>Informacja zlecenia</th>
+                        <th>Klient</th>
+                        <th>Nómer kwitu</th>
+                        <th>Ilość dywanów</th>
+                        <th>Numer klienta</th>
+                        <th>Cena usługi</th>
+                    </thead>
+                    <tr class="ticket">
+                        <th class="is_express"></th>
+                        <td><ul id="small_symbols">
+                            <li>Dodany przez <b>{{ ticket.worker.user.username }}</b></li>
+                            <li>w dniu <b>{{ ticket.created|date:'d.m.Y' }}</b></li>
+                            <li>data oddania <b></b></li>
+                            <li>status <b>{{ ticket.status.title }}</b></li>
+                        </ul></td>
+                        <td>{{ ticket.client }}</td>
+                        <td>{{ ticket.ticket_number }}</td>
+                        <td>{{ ticket.carpets_nmb }}</td>
+                        <td>{{ ticket.phone_number }}</td>
+                        <th>{{ ticket.coast }} zł</th>
+                    </tr>
+                    {% if ticket.is_express %}
+                    <script>
+                        $('.is_express').text('EKSPRES').css({'color' : 'red'});
+                    </script>
+                    {% endif %}
+                </table>
+            </div>
+            <div class="col">
+                {% if ticket.is_ready %}
+                    <li><a href="#"><button class="btn btn-success">WYDRUKOWAĆ</button></a></li>
+                    <li><a href="{% url 'calculate_ticket_coast' ticket.identificator %}"><button class="btn btn-success">Podlić cenę</button></a></li>
+                {% endif %}
+                <li><a href="#"><button class="btn btn-success">Zmień status</button></a></li>
+                <li><a href="{% url 'delete_ticket' ticket.identificator %}"><button class="btn btn-danger">Usuń</button></a></li>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12"><h2>Dywany</h2></div>
+            <ul>
+                <li><button class="btn btn-info" onclick="open_carpet()">Rozwiń redagowanie dywanów</button></li>
+                <li><button class="btn btn-info" onclick="open_carpet_ready()">Zmierzone dywany</button></li>
+            </ul>
+        </div>
+
+        <div id="carpets">
+            <div id="carpet"></div>
+            <div id="carpet_ready">
+                    <table class="carpet_ready table">
+                        <thead>
+                            <th>#</th>
+                            <th>Wymiary</th>
+                            <th>m2</th>
+                            <th>Status</th>
+                            <th>N</th>
+                            <th>O</th>
+                            <th>I</th>
+                            <th>R</th>
+                            <th>Ś</th>
+                            <th></th>
+                            <th></th>
+                        </thead>
+                        {% for carpet in carpets_ready %}
+                            <tr id="carpet_{{ carpet.id }}">
+                                <th>{{ carpet.id }}</th>
+                                <td>{{ carpet.width }} * {{ carpet.height }}</td>
+                                <td></td>
+                                <td>{{ carpet.status }}</td>
+                                <td>{% if carpet.neutralization %}+{% endif %}</td>
+                                <td>{% if carpet.ozon %}+{% endif %}</td>
+                                <td>{% if carpet.impregnation %}+{% endif %}</td>
+                                <td>{% if carpet.roztocz %}+{% endif %}</td>
+                                <td>{% if carpet.siersc %}+{% endif %}</td>
+
+                                {% if ticket.is_ready == False %}
+                                <td><a href="#"><button id="btn_change_carpet" class="btn btn-info" onclick="show_change_carpet(event, {{ carpet.id }})">Zmień</button></a></td>
+                                {% endif %}
+                                <td><a href="{% url 'delete_carpet' ticket.identificator carpet.id %}"><button class="btn btn-danger">Usuń</button></a></td>
+                            </tr>
+                            <tr id="change_carpet_{{ carpet.id }}">
+                                <form action="{% url 'update_carpet' ticket.identificator carpet.id %}" method="POST" id="{{ carpet.id }}">{% csrf_token %}
+                                    <th>{{ carpet.id }}</th>
+                                    <td>{{ carpet_update_form.height }} * {{ form.width }}</td>
+                                    <td></td>
+                                    <td>{{ carpet_update_form.status }}</td>
+                                    <td>{{ carpet_update_form.neutralization }}</td>
+                                    <td>{{ carpet_update_form.ozon }}</td>
+                                    <td>{{ carpet_update_form.impregnation }}</td>
+                                    <td>{{ carpet_update_form.roztocz }}</td>
+                                    <td>{{ carpet_update_form.siersc }}</td>
+                                    <td><input type="submit" value="Zapisz" class="btn btn-success"></td>
+                                </form>
+                            </tr>
+                            <script>$('#change_carpet_{{ carpet.id }}').hide();</script>
+                        {% endfor %}
+                    </table>
+                </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        $('#carpet').hide();
+        $('#carpet_ready').hide();
+
+        function open_carpet(){
+            $('#carpet').slideToggle();
+        };
+
+        function open_carpet_ready() {
+            $('#carpet_ready').slideToggle();
+        }
+
+        function change_carpet(event, carpet_id){
+            event.preventDefault();
+        }
+
+        /*Добавляем на страницу нужное кол-во форм, указанное в кол-ве ковров для квитанции*/
+        var carpets_nmb = {{ carpets_nmb }};
+        $base_class = $('#carpet');
+        $form = `<form action="{% url 'ticket_detail' ticket.identificator %}" method="POST">{% csrf_token %}
+                    <table class="carpet_to_save table">
+                        <thead>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </thead>
+                        <tr>
+                            <td>{{ form.height }} * {{ form.width }}</td>
+                            <td><ul>
+                                <li>Neutralizacja</li>
+                                <li>Ozonowanie</li>
+                                <li>Impregnacja</li>
+                                <li>Roztocz</li>
+                                <li>Sierść</li>
+                            </ul></td>
+                            <td><ul>
+                                <li>{{ form.neutralization }}</li>
+                                <li>{{ form.ozon }}</li>
+                                <li>{{ form.impregnation }}</li>
+                                <li>{{ form.roztocz }}</li>
+                                <li>{{ form.siersc }}</li>
+                            </ul></td>
+                            <td><input type="submit" value="Zapisz" class='btn btn-success'></td>
+                        </tr>
+                    </table>
+                </form>`;
+        for (i=0; i<carpets_nmb; i++){
+            $base_class.prepend($form);
+        };
+
+        /*Изменение информации о ковре*/
+        function show_change_carpet(event, carpet_id) {
+            event.preventDefault();
+            $('#carpet_' + carpet_id).hide();
+            $('#change_carpet_' + carpet_id).show();
+        };
+
+
+        /*AJAX create carpet*/
+        /*$('form').submit(function (e) {
+            e.preventDefault();
+            $(this).addClass('active');
+            var ticket_identificator = $(this).find('input[type="submit"]').data('ticket_identificator');
+            var height = $(this).find('#id_height').val();
+            var width = $(this).find('#id_width').val();
+            $.ajax({
+            url: '{% url "ticket_detail" ticket.identificator %}',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                'csrfmiddlewaretoken' : $(this).find('input[name="csrfmiddlewaretoken"]').attr('value'),
+                'ticket_identificator' : ticket_identificator,
+                'height' : height,
+                'width' : width,
+            },
+            success: $('form.active').hide(),
+            error: 'error',
+        });
+        });*/
+
+    </script>
+{% endblock %}

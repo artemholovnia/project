@@ -1,0 +1,46 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+                <div class="col-12"><h2>Informacja zlecenia <a href="#"><button class="btn btn-info">Zmień</button></a></h2></div>
+        </div>
+
+        <div class="row">
+            <div class="col-9">
+                <table class="table table-bordered">
+                    <thead class="table">
+                        <th></th>
+                        <th>Informacja zlecenia</th>
+                        <th>Klient</th>
+                        <th>Nómer kwitu</th>
+                        <th>Ilość dywanów</th>
+                        <th>Numer klienta</th>
+                    </thead>
+                    <tr class="ticket">
+                        <th class="is_express"></th>
+                        <td><ul id="small_symbols">
+                            <li>Dodany przez <b>{{ ticket.worker.user.username }}</b></li>
+                            <li>w dniu <b>{{ ticket.created|date:'d.m.Y' }}</b></li>
+                            <li>data oddania <b></b></li>
+                            <li>status <b>{{ ticket.status.title }}</b></li>
+                        </ul></td>
+                        <td>{{ ticket.client }}</td>
+                        <td>{{ ticket.ticket_number }}</td>
+                        <td>{{ ticket.carpets_nmb }}</td>
+                        <td>{{ ticket.phone_number }}</td>
+                    </tr>
+                    {% if ticket.is_express %}
+                    <script>
+                        $('.is_express').text('EKSPRES').css({'color' : 'red'});
+                    </script>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+                <div class="col-12"><a href="{% url 'calculate_ticket_coast' ticket.identificator %}"><button class="btn btn-success">Podlić cenę usługi</button></a></div>
+        </div>
+    </div>
+{% endblock %}

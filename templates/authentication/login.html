@@ -1,0 +1,24 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+    <form action="{% url 'login' %}" method="POST">{% csrf_token %}
+        <table>
+            {% if login_error %}
+                <tr>
+                    <td></td><td>{{ login_error }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td><label for="username">Username</label></td>
+                <td><input type="text" name="username"></td>
+            </tr>
+            <tr>
+                <td><label for="password">Hasło</label></td>
+                <td><input type="password" name="password"></td>
+            </tr>
+            <tr>
+                <td></td><td><input type="submit" value="Zaloguj się"></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

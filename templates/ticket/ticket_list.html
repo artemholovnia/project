@@ -1,0 +1,62 @@
+{% extends 'base_template.html' %}
+{% block title %}Ticket list{% endblock %}
+{% block content %}
+    <div class="container">
+        <form action="{% url 'filtering_data' %}" method="post">{% csrf_token %}
+            <label for="find">Wyszukiwanie</label>
+            <input type="text" class="find" name="filtering_data_text">
+            <input type="submit" class="btn btn-success" value="Szukaj">
+        </form>
+
+        <div class="row">
+            <div class="col-12">
+            <table class="tickets table">
+            <thead>
+                <th></th>
+                <th>Informacja zlecenia</th>
+                <th>Klient</th>
+                <th>Nómer kwitu</th>
+                <th>Ilość dywanów</th>
+                <th>Numer klienta</th>
+                <th></th>
+                <th></th>
+            </thead>
+            {% for ticket in tickets %}
+                <tr class="ticket">
+                    <th class="is_express"></th>
+                    <td><ul id="small_symbols">
+                        <li>Dodany przez <b>{{ ticket.worker.user.username }}</b></li>
+                        <li>w dniu <b>{{ ticket.created|date:'d.m.Y' }}</b></li>
+                        <li>data oddania <b></b></li>
+                        <li>status <b>{{ ticket.status.title }}</b></li>
+                    </ul></td>
+                    <td>{{ ticket.client }}</td>
+                    <td>{{ ticket.ticket_number }}</td>
+                    <td>{{ ticket.carpets_nmb }}</td>
+                    <td>{{ ticket.phone_number }}</td>
+                    <td><ul>
+                        {% if ticket.is_ready %}
+                            <li><a href="#"><button class="btn btn-success">Wydrukować podtwierdzenie</button></a></li>
+                        {% endif %}
+                        <li><a href="{% url 'ticket_detail' ticket.identificator %}"><button class="btn btn-info">Podgląd</button></a></li>
+                        <li><a href="{% url 'delete_ticket' ticket.identificator %}"><button class="btn btn-danger">Usuń</button></a></li>
+                    </ul></td>
+                </tr>
+
+                {% if ticket.is_express %}
+                    <script>
+                    $('.is_express').last().text('EKSPRES').css({'color' : 'red'});
+                    </script>
+                {% endif %}
+
+            {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+    </script>
+{% endblock %}
