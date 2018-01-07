@@ -169,7 +169,8 @@ def filtering_data(request):
             for tag in tags.split('-'):
                 if filtering_data_text == tag:
                    ticket_list.append(ticket)
-        return render(request, 'ticket/ticket_list.html', {'tickets': ticket_list})
+        return render(request, 'ticket/ticket_list.html', {'tickets': ticket_list,
+                                                           'worker': Worker.objects.get(user=auth.get_user(request))})
 
 #wyliczenie ceny zlecenia
 @login_required(login_url=LOGIN_URL)
