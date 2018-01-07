@@ -54,3 +54,12 @@ label{
 #small_symbols{
     font-size: 12px;
 }
+
+.inside-container{
+    margin-top: 30px;
+}
+
+.btn-dark{
+    background-color: #2E2F31;
+    color: #ffffff;
+}

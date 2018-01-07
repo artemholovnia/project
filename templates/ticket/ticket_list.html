@@ -2,12 +2,14 @@
 {% block title %}Ticket list{% endblock %}
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <form action="{% url 'filtering_data' %}" method="post">{% csrf_token %}
-                    <input type="text" class="find" name="filtering_data_text">
-                    <input type="submit" class="btn btn-success" value="Szukaj">
-                </form>
+        <div class="inside-container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <form action="{% url 'filtering_data' %}" method="post">{% csrf_token %}
+                        <input type="text" class="find" name="filtering_data_text">
+                        <input type="submit" class="btn btn-dark" value="Szukaj">
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -39,9 +41,9 @@
                     <td>{{ ticket.phone_number }}</td>
                     <td><ul>
                         {% if ticket.is_ready %}
-                            <li><a href="#"><button class="btn btn-success">Wydrukować podtwierdzenie</button></a></li>
+                            <li><a href="#"><button class="btn btn-dark">Wydrukować podtwierdzenie</button></a></li>
                         {% endif %}
-                        <li><a href="{% url 'ticket_detail' ticket.identificator %}"><button class="btn btn-info">Podgląd</button></a></li>
+                        <li><a href="{% url 'ticket_detail' ticket.identificator %}"><button class="btn btn-dark">Podgląd</button></a></li>
                         <li><a href="{% url 'delete_ticket' ticket.identificator %}"><button class="btn btn-danger">Usuń</button></a></li>
                     </ul></td>
                 </tr>
@@ -54,12 +56,10 @@
 
             {% endfor %}
             </table>
+            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block scripts %}
-    <script>
-
-    </script>
 {% endblock %}

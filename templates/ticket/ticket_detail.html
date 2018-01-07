@@ -2,114 +2,118 @@
 {% block title %}Detail {{ ticket.ticket_number }}{% endblock %}
 {% block content %}
     <div class="container">
-
-        <div class="row">
-            <div class="col-12"><h2>Informacja zlecenia</h2></div>
-        </div>
-
-        <div class="row">
-            <div class="col-9">
-                <table class="table table-bordered">
-                    <thead class="table">
-                        <th></th>
-                        <th>Informacja zlecenia</th>
-                        <th>Klient</th>
-                        <th>Nómer kwitu</th>
-                        <th>Ilość dywanów</th>
-                        <th>Numer klienta</th>
-                        <th>Cena usługi</th>
-                    </thead>
-                    <tr class="ticket">
-                        <th class="is_express"></th>
-                        <td><ul id="small_symbols">
-                            <li>Dodany przez <b>{{ ticket.worker.user.username }}</b></li>
-                            <li>w dniu <b>{{ ticket.created|date:'d.m.Y' }}</b></li>
-                            <li>data oddania <b></b></li>
-                            <li>status <b>{{ ticket.status.title }}</b></li>
-                        </ul></td>
-                        <td>{{ ticket.client }}</td>
-                        <td>{{ ticket.ticket_number }}</td>
-                        <td>{{ ticket.carpets_nmb }}</td>
-                        <td>{{ ticket.phone_number }}</td>
-                        <th>{{ ticket.coast }} zł</th>
-                    </tr>
-                    {% if ticket.is_express %}
-                    <script>
-                        $('.is_express').text('EKSPRES').css({'color' : 'red'});
-                    </script>
-                    {% endif %}
-                </table>
-            </div>
-            <div class="col">
+        <div class="inside-container">
+            <div class="row">
+                <div class="col text-center"><h2>Informacja zlecenia</h2></div>
                 {% if ticket.is_ready %}
-                    <li><a href="#"><button class="btn btn-success">WYDRUKOWAĆ</button></a></li>
-                    <li><a href="{% url 'calculate_ticket_coast' ticket.identificator %}"><button class="btn btn-success">Podlić cenę</button></a></li>
+                        <div class="col"><a href="#"><button class="btn btn-dark">WYDRUKOWAĆ</button></a></div>
+                        <div class="col"><a href="{% url 'calculate_ticket_coast' ticket.identificator %}">
+                            <button class="btn btn-dark">Podlić cenę</button></a></div>
                 {% endif %}
-                <li><a href="#"><button class="btn btn-success">Zmień status</button></a></li>
-                <li><a href="{% url 'delete_ticket' ticket.identificator %}"><button class="btn btn-danger">Usuń</button></a></li>
+                <div class="col-sm-2"><a href="#"><button class="btn btn-dark">Zmień status</button></a></div>
+                <div class="col-sm-2"><a href="{% url 'delete_ticket' ticket.identificator %}">
+                    <button class="btn btn-danger">Usuń</button></a></div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-12"><h2>Dywany</h2></div>
-            <ul>
-                <li><button class="btn btn-info" onclick="open_carpet()">Rozwiń redagowanie dywanów</button></li>
-                <li><button class="btn btn-info" onclick="open_carpet_ready()">Zmierzone dywany</button></li>
-            </ul>
-        </div>
-
-        <div id="carpets">
-            <div id="carpet"></div>
-            <div id="carpet_ready">
-                    <table class="carpet_ready table">
-                        <thead>
-                            <th>#</th>
-                            <th>Wymiary</th>
-                            <th>m2</th>
-                            <th>Status</th>
-                            <th>N</th>
-                            <th>O</th>
-                            <th>I</th>
-                            <th>R</th>
-                            <th>Ś</th>
+            <div class="row">
+                <div class="col table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table">
                             <th></th>
-                            <th></th>
+                            <th>Informacja zlecenia</th>
+                            <th>Klient</th>
+                            <th>Nómer kwitu</th>
+                            <th>Ilość dywanów</th>
+                            <th>Numer klienta</th>
+                            <th>Cena usługi</th>
                         </thead>
-                        {% for carpet in carpets_ready %}
-                            <tr id="carpet_{{ carpet.id }}">
-                                <th>{{ carpet.id }}</th>
-                                <td>{{ carpet.width }} * {{ carpet.height }}</td>
-                                <td></td>
-                                <td>{{ carpet.status }}</td>
-                                <td>{% if carpet.neutralization %}+{% endif %}</td>
-                                <td>{% if carpet.ozon %}+{% endif %}</td>
-                                <td>{% if carpet.impregnation %}+{% endif %}</td>
-                                <td>{% if carpet.roztocz %}+{% endif %}</td>
-                                <td>{% if carpet.siersc %}+{% endif %}</td>
-
-                                {% if ticket.is_ready == False %}
-                                <td><a href="#"><button id="btn_change_carpet" class="btn btn-info" onclick="show_change_carpet(event, {{ carpet.id }})">Zmień</button></a></td>
-                                {% endif %}
-                                <td><a href="{% url 'delete_carpet' ticket.identificator carpet.id %}"><button class="btn btn-danger">Usuń</button></a></td>
-                            </tr>
-                            <tr id="change_carpet_{{ carpet.id }}">
-                                <form action="{% url 'update_carpet' ticket.identificator carpet.id %}" method="POST" id="{{ carpet.id }}">{% csrf_token %}
-                                    <th>{{ carpet.id }}</th>
-                                    <td>{{ carpet_update_form.height }} * {{ form.width }}</td>
-                                    <td></td>
-                                    <td>{{ carpet_update_form.status }}</td>
-                                    <td>{{ carpet_update_form.neutralization }}</td>
-                                    <td>{{ carpet_update_form.ozon }}</td>
-                                    <td>{{ carpet_update_form.impregnation }}</td>
-                                    <td>{{ carpet_update_form.roztocz }}</td>
-                                    <td>{{ carpet_update_form.siersc }}</td>
-                                    <td><input type="submit" value="Zapisz" class="btn btn-success"></td>
-                                </form>
-                            </tr>
-                            <script>$('#change_carpet_{{ carpet.id }}').hide();</script>
-                        {% endfor %}
+                        <tr class="ticket">
+                            <th class="is_express"></th>
+                            <td><ul id="small_symbols">
+                                <li>Dodany przez <b>{{ ticket.worker.user.username }}</b></li>
+                                <li>w dniu <b>{{ ticket.created|date:'d.m.Y' }}</b></li>
+                                <li>data oddania <b></b></li>
+                                <li>status <b>{{ ticket.status.title }}</b></li>
+                            </ul></td>
+                            <td>{{ ticket.client }}</td>
+                            <td>{{ ticket.ticket_number }}</td>
+                            <td>{{ ticket.carpets_nmb }}</td>
+                            <td>{{ ticket.phone_number }}</td>
+                            <th>{{ ticket.coast }} zł</th>
+                        </tr>
+                        {% if ticket.is_express %}
+                        <script>
+                            $('.is_express').text('EKSPRES').css({'color' : 'red'});
+                        </script>
+                        {% endif %}
                     </table>
                 </div>
+            </div>
+        </div>
+
+        <div class="inside-container">
+            <div class="row text-center">
+                <div class="col"><h2>Dywany</h2></div>
+                <div class="col"><button class="btn btn-dark" onclick="open_carpet()">Rozwiń redagowanie dywanów</button></div>
+                <div class="col"><button class="btn btn-dark" onclick="open_carpet_ready()">Zmierzone dywany</button></div>
+            </div>
+
+            <div class="row">
+                <div class="col table-responsive" id="carpet"></div>
+            </div>
+
+            <div class="row">
+                <div class="col table-responsive" id="carpet_ready">
+                    <table class="carpet_ready table">
+                            <thead>
+                                <th>#</th>
+                                <th>Wymiary</th>
+                                <th>m2</th>
+                                <th>Status</th>
+                                <th>N</th>
+                                <th>O</th>
+                                <th>I</th>
+                                <th>R</th>
+                                <th>Ś</th>
+                                <th></th>
+                                <th></th>
+                            </thead>
+                            {% for carpet in carpets_ready %}
+                                <tr id="carpet_{{ carpet.id }}">
+                                    <th>{{ carpet.id }}</th>
+                                    <td>{{ carpet.width }} * {{ carpet.height }}</td>
+                                    <td></td>
+                                    <td>{{ carpet.status }}</td>
+                                    <td>{% if carpet.neutralization %}+{% endif %}</td>
+                                    <td>{% if carpet.ozon %}+{% endif %}</td>
+                                    <td>{% if carpet.impregnation %}+{% endif %}</td>
+                                    <td>{% if carpet.roztocz %}+{% endif %}</td>
+                                    <td>{% if carpet.siersc %}+{% endif %}</td>
+
+                                    {% if ticket.is_ready == False %}
+                                    <td><a href="#"><button id="btn_change_carpet" class="btn btn-dark" onclick="show_change_carpet(event, {{ carpet.id }})">Zmień</button></a></td>
+                                    {% endif %}
+                                    <td><a href="{% url 'delete_carpet' ticket.identificator carpet.id %}"><button class="btn btn-danger">Usuń</button></a></td>
+                                </tr>
+                                <tr id="change_carpet_{{ carpet.id }}">
+                                    <form action="{% url 'update_carpet' ticket.identificator carpet.id %}" method="POST" id="{{ carpet.id }}">{% csrf_token %}
+                                        <th>{{ carpet.id }}</th>
+                                        <td>{{ carpet_update_form.height }} * {{ form.width }}</td>
+                                        <td></td>
+                                        <td>{{ carpet_update_form.status }}</td>
+                                        <td>{{ carpet_update_form.neutralization }}</td>
+                                        <td>{{ carpet_update_form.ozon }}</td>
+                                        <td>{{ carpet_update_form.impregnation }}</td>
+                                        <td>{{ carpet_update_form.roztocz }}</td>
+                                        <td>{{ carpet_update_form.siersc }}</td>
+                                        <td><input type="submit" value="Zapisz" class="btn btn-success"></td>
+                                    </form>
+                                </tr>
+                                <script>$('#change_carpet_{{ carpet.id }}').hide();</script>
+                            {% endfor %}
+                        </table>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
