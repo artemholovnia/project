@@ -10,7 +10,7 @@ from worker_registration.models import *
 from django.shortcuts import get_list_or_404, get_object_or_404
 from .forms import *
 from django.utils.timezone import datetime
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 import string
 import random
 
@@ -49,9 +49,12 @@ class BaseView(View):
 #active_tickets - объекты всех существующий активных квитанций
     def get_context_data(self, **kwargs):
         context = super(BaseView, self).get_context_data(**kwargs)
-        context['worker'] = Worker.objects.get(user=auth.get_user(self.request).id)
+        try:
+            worker = Worker.objects.get(user=auth.get_user(self.request))
+        except Worker.DoesNotExist:
+            worker = False
+        context['worker'] = worker
         context['app_name'] = 'ticket'
-        context['active_tickets'] = Ticket.objects.all()
         return context
 
 #Представление всех квитанций

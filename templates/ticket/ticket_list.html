@@ -2,14 +2,17 @@
 {% block title %}Ticket list{% endblock %}
 {% block content %}
     <div class="container">
-        <form action="{% url 'filtering_data' %}" method="post">{% csrf_token %}
-            <label for="find">Wyszukiwanie</label>
-            <input type="text" class="find" name="filtering_data_text">
-            <input type="submit" class="btn btn-success" value="Szukaj">
-        </form>
-
         <div class="row">
             <div class="col-12">
+                <form action="{% url 'filtering_data' %}" method="post">{% csrf_token %}
+                    <input type="text" class="find" name="filtering_data_text">
+                    <input type="submit" class="btn btn-success" value="Szukaj">
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="table-responsive">
             <table class="tickets table">
             <thead>
                 <th></th>

@@ -14,30 +14,45 @@
     <link rel="stylesheet" href="{% static 'ticket.css' %}">
 </head>
 <body>
-<div class="row">
-<div class="col alert alert-success">DEVELOPEMENT <a href="https://github.com/artemholovnia/project" class="alert-link">github</a></div>
-</div>
+
 {% if user.is_authenticated %}
-<div id="auth" class="bg-info">
-    <a href="{% url 'logout' %}" class="light">Wylogować ({{ worker.user.username }}, {{ worker.position.title }})</a>
-</div>
-<div id="nav" class="fa-mobile-phone">
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'create_ticket' %}">Dodaj kwit</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'all_tickets' %}">Dostępne kwity</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">API</a>
-        </li>
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Menu</a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'create_ticket' %}">Dodaj kwit</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'all_tickets' %}">Dostępne kwity</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">API</a>
+      </li>
     </ul>
-</div>
+
+    <span class="navbar-text">
+        {% if worker %}
+            <a href="{% url 'logout' %}" class="light">Wylogować ({{ worker.user.username }}, {{ worker.position.title }})</a>
+        {% else %}
+            <a href="#" class="danger">Zarejestruj pracownika</a>
+        {% endif %}
+    </span>
+
+  </div>
+</nav>
 
 {% endif %}
 
-{% block content %}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col alert alert-successo fixed-top">DEVELOPEMENT <a href="https://github.com/artemholovnia/project" class="alert-link">github</a></div>
+</div>
+{% endblock %}
 {% block scripts %}{% endblock %}
 </body>
 </html>
