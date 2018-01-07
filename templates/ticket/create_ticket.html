@@ -1,39 +1,43 @@
 {% extends 'base_template.html' %}
 {% block title %}Dodawanie kwitu{% endblock %}
 {% block content %}
-    <div class="last_ticket">Ostatni dodany numer kwitu: <span class="last_ticket_number"></span></div>
-    <form action="#" method="post">{% csrf_token %}
-    <table>
-        <tr>
-            <th>Typ zlecenia</th>
-            <th>Numer kwitu</th>
-            <th>Miesiąc</th>
-        </tr>
-        <tr>
-            <td>{{ form.client }}</td>
-            <td>{{ form.ticket_number }}</td>
-            <td>{{ form.month }}</td>
-        </tr>
-        <tr>
-            <th>Numer klienta</th>
-            <td>{{ form.phone_number }}</td>
-        </tr>
-        <tr>
-            <th>Ilość dywanów</th>
-            <td>{{ form.carpets_nmb }}</td>
-        </tr>
-        <tr>
-            <th>Usługa ekspresowa</th>
-            <td>{{ form.is_express }}</td>
-        </tr>
-        <tr>
-            <th>Uwagi</th>
-            <td>{{ form.attentions }}</td>
-        </tr>
-
-        <tr><td></td><td><input type="submit" value="Zapisz" class="btn btn-success"></td></tr>
-    </table>
-    </form>
+    <div class="container">
+        <div class="row"><div class="last_ticket col-sm-12">Ostatni dodany numer kwitu: <span class="last_ticket_number"></span></div></div>
+        <form action="{% url 'create_ticket' %}" method="POST">{% csrf_token %}
+            <div class="form-group">
+                <label class="text-muted">Klient</label>
+                {{ form.client }}
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Mesiąc</label>
+                {{ form.month }}
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Numer kwitu</label>
+                {{ form.ticket_number }}
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Number klienta</label>
+                {{ form.phone_number }}
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Iłość dywanów</label>
+                {{ form.carpets_nmb }}
+            </div>
+            <div class="checkbox text-center">
+                <div class="text-danger">
+                    <lable>{{ form.is_express }} EKSPRES</lable>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Dodatkowa informacja</label>
+                {{ form.attentions }}
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Zapisz" class="btn btn-block btn-success">
+            </div>
+        </form>
+    </div>
 {% endblock %}
 
 {% block scripts %}
