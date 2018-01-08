@@ -1,0 +1,11 @@
+АДМИН:
+1. User registration
+2. Добавление worker
+3. Добавление position
+4. Добавление statusforcarpet
+5. ---------- statusforticket
+6. ---------- client
+
+Вообщем:
+1. Валидация форм
+2. Генерация квитанции
