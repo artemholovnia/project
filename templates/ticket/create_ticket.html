@@ -2,8 +2,8 @@
 {% block title %}Dodawanie kwitu{% endblock %}
 {% block content %}
     <div class="container">
+        <div class="row"><div class="last_ticket col-sm-12 bg-info text-center">Ostatni dodany numer kwitu: <span class="last_ticket_number"></span></div></div>
         <div class="inside-container">
-            <div class="row"><div class="last_ticket col-sm-12 bg-info text-center">Ostatni dodany numer kwitu: <span class="last_ticket_number"></span></div></div>
             <form action="{% url 'create_ticket' %}" method="POST">{% csrf_token %}
                 <div class="form-group">
                     <label class="text-muted">Klient</label>
