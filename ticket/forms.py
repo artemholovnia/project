@@ -24,7 +24,7 @@ class CarpetUpdateForm(ModelForm):
     class Meta():
         model = Carpet
         fields = ['height', 'width', 'neutralization', 'ozon', 'impregnation', 'roztocz', 'siersc', 'status']
-        
+
 class FindForm(Form):
     find_text = CharField(max_length=20, label='find')
 

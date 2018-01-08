@@ -96,7 +96,16 @@
                                     <td><a href="{% url 'delete_carpet' ticket.identificator carpet.id %}"><button class="btn btn-danger">Usuń</button></a></td>
                                 </tr>
                                 <tr id="change_carpet_{{ carpet.id }}">
-                                    <form action="{% url 'update_carpet' ticket.identificator carpet.id %}" method="POST" id="{{ carpet.id }}">{% csrf_token %}
+                                    <form action="{% url 'update_carpet' ticket.identificator carpet.id %}"
+                                        method="POST" id="{{ carpet.id }}"
+                                        data-carpet_height="{{ carpet.height }}"
+                                        data-carpet_width="{{ carpet.width }}"
+                                        data-carpet_status="{{ carpet.status }}"
+                                        data-carpet_n="{{ carpet.neutralization }}"
+                                        data-carpet_o="{{ carpet.ozon }}"
+                                        data-carpet_i="{{ carpet.impregnation }}"
+                                        data-carpet_r="{{ carpet.roztocz }}"
+                                        data-carpet_s="{{ carpet.siersc }}">{% csrf_token %}
                                         <th>{{ carpet.id }}</th>
                                         <td>{{ carpet_update_form.height }} * {{ form.width }}</td>
                                         <td></td>
@@ -175,7 +184,44 @@
         function show_change_carpet(event, carpet_id) {
             event.preventDefault();
             $('#carpet_' + carpet_id).hide();
-            $('#change_carpet_' + carpet_id).show();
+            $change_carpet_show = $('#change_carpet_' + carpet_id);
+            $change_carpet_form = $change_carpet_show.find('form');
+            $change_carpet_show.show();
+
+            /*już utworzone danne dywanu*/
+            $height = $change_carpet_form.data('carpet_height');
+            $width = $change_carpet_form.data('carpet_width');
+            $status = $change_carpet_form.data('carpet_status');
+            $n = $change_carpet_form.data('carpet_n');
+            $o = $change_carpet_form.data('carpet_o');
+            $i = $change_carpet_form.data('carpet_i');
+            $r = $change_carpet_form.data('carpet_r');
+            $s = $change_carpet_form.data('carpet_s');
+
+            $paste_select = 'select :contains("' + $status + '")';
+
+            /*zaznaczamy w polach zaktualizowane danne*/
+            $change_carpet_show.find('#id_height').val($height);
+            $change_carpet_show.find('#id_width').val($width);
+            $change_carpet_show.find($paste_select).attr('selected', 'selected');
+            if($n){
+                $change_carpet_show.find('#id_neutralization').attr('checked', 'checked');
+            }
+            if($o){
+                $change_carpet_show.find('#id_ozon').attr('checked', 'checked');
+            }
+            if($i){
+                $change_carpet_show.find('#id_impregnation').attr('checked', 'checked');
+            }
+            if($r){
+                $change_carpet_show.find('#id_roztocz').attr('checked', 'checked');
+            }
+            if($s){
+                $change_carpet_show.find('#id_siersc').attr('checked', 'checked');
+            }
+
+            $('#id_height :last').val($height);
+
         };
 
 

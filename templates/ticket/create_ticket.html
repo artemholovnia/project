@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container">
         <div class="inside-container">
-            <div class="row"><div class="last_ticket col-sm-12 bg-info">Ostatni dodany numer kwitu: <span class="last_ticket_number"></span></div></div>
+            <div class="row"><div class="last_ticket col-sm-12 bg-info text-center">Ostatni dodany numer kwitu: <span class="last_ticket_number"></span></div></div>
             <form action="{% url 'create_ticket' %}" method="POST">{% csrf_token %}
                 <div class="form-group">
                     <label class="text-muted">Klient</label>
@@ -57,6 +57,10 @@
         $('#id_month option[value="{{ month_for_select }}"]').attr("selected", "selected");
     });
 
+    $(function () {
+        $('#id_phone_number').mask("999-999-999");
+    })
+
     $last_ticket = $('.last_ticket').hide();
     $('#id_client').change(function () {
         $selected = $(this).find(':selected').text().toLowerCase();
@@ -79,8 +83,5 @@
 
     });
 
-    $(function () {
-        $('#id_phone_number').mask("999 999 999");
-    })
     </script>
 {% endblock %}

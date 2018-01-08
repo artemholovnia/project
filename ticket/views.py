@@ -139,7 +139,7 @@ class TicketCreate(BaseView, FormView):
         context = super(TicketCreate, self).get_context_data(**kwargs)
         context['last_ticket_number_for_transport'] = last_ticket_number_for_transport
         context['last_ticket_number_for_personal'] = last_ticket_number_for_personal
-        context['month_for_select'] = datetime.today().month + 1
+        context['month_for_select'] = datetime.today().month
         return context
 
     def form_valid(self, form):

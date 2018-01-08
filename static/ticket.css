@@ -66,10 +66,10 @@ label{
 
 .last_ticket{
     padding: 10px 10px;
-    color: #2E2F31;
+    color: #ffffff;
 }
 
 .last_ticket > span.last_ticket_number{
-    color: #c61000;
-    font-size: larger;
+    color: #fb2300;
+    font-size: 2em;
 }
