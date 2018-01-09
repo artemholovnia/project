@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'worker_registration',
     'rest_framework',
     'django_extensions',
+    'admin',
 ]
 
 MIDDLEWARE = [

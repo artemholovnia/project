@@ -31,8 +31,18 @@
         <a class="nav-link" href="{% url 'all_tickets' %}">Dostępne kwity</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">API</a>
+        <a class="nav-link" href="#">API debug</a>
       </li>
+
+      {% if worker.is_admin %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_user' %}">Rejestracja użytkownika</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_worker' %}">Rejectracja pracownika</a>
+          </li>
+      {% endif %}
+    
     </ul>
 
     <span class="navbar-text">

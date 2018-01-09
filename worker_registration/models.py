@@ -11,11 +11,12 @@ class Position(models.Model):
         return '%s' % (self.title)
 
 class Worker(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     position = models.ForeignKey(Position, on_delete=models.DO_NOTHING)
     created = models.DateTimeField(auto_now_add=True, verbose_name='created in')
-    status = models.BooleanField(blank=True, default=1, verbose_name='status')
+    status = models.BooleanField(blank=True, default=True, verbose_name='status')
     permission = models.SmallIntegerField(blank=False, default=0, verbose_name='permission')
+    is_admin = models.BooleanField(blank=False, default=False, verbose_name='is admin')
 
     def __str__(self):
         return '%s - %s' % (self.user.username, self.position.title)
