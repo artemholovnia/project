@@ -11,7 +11,7 @@ from worker_registration.models import Worker
 # Create your views here.
 
 class CreateUser(BaseView, FormView):
-    template_name = 'admin/create_user.html'
+    template_name = 'admin_site/create_user.html'
     form_class = CreateUserForm
 
     def form_valid(self, form):
@@ -27,6 +27,6 @@ class CreateUser(BaseView, FormView):
             return redirect(reverse('create_user'))
 
 class CreateWorker(BaseView, CreateView):
-    template_name = 'admin/create_worker.html'
+    template_name = 'admin_site/create_worker.html'
     form_class = CreateWorkerForm
 

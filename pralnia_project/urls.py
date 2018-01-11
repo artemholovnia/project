@@ -23,5 +23,5 @@ urlpatterns = [
     url(r'^api/', include('api.urls'), name='api'),
     url(r'^ticket/', include('ticket.urls'), name='ticket'),
     url(r'^authentication/', include('authentication.urls'), name='authentication'),
-    url(r'^admin_site/', include('admin.urls'), name='admin'),
+    url(r'^admin_site/', include('admin_site.urls'), name='admin'),
 ]
