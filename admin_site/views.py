@@ -19,6 +19,8 @@ class CreateUser(BaseView, FormView):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             repeat_password = form.cleaned_data.get('repeat_password')
+            if repeat_password != password:
+                return redirect(reverse('create_user'))
             try:
                 get_user = User.objects.get(username=username)
             except User.DoesNotExist:
@@ -29,4 +31,11 @@ class CreateUser(BaseView, FormView):
 class CreateWorker(BaseView, CreateView):
     template_name = 'admin_site/create_worker.html'
     form_class = CreateWorkerForm
+
+    def form_valid(self, form):
+        if self.request.method == 'POST':
+            form.save()
+            return redirect(reverse('all_tickets'))
+
+
 

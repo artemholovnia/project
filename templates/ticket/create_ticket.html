@@ -17,6 +17,10 @@
                     <label class="text-muted">Numer kwitu</label>
                     {{ form.ticket_number }}
                 </div>
+                <div class="form-group" id="address">
+                    <label class="text-muted">Adres</label>
+                    {{ form.address }}
+                </div>
                 <div class="form-group">
                     <label class="text-muted">Number klienta</label>
                     {{ form.phone_number }}
@@ -62,22 +66,27 @@
     })
 
     $last_ticket = $('.last_ticket').hide();
+    $address = $('#address').hide();
+
     $('#id_client').change(function () {
         $selected = $(this).find(':selected').text().toLowerCase();
         if ($selected == 'osobisty'){
-            $last_ticket.show();
+            $last_ticket.slideDown();
+            $address.slideUp();
             $last_number_input = {{ last_ticket_number_for_personal }} + 1;
             $('.last_ticket_number').text('{{ last_ticket_number_for_personal }}');
             $('#id_ticket_number').val($last_number_input);
         }
         else if ($selected == 'transport'){
-            $last_ticket.show();
+            $last_ticket.slideDown();
+            $address.slideDown();
             $last_number_input = {{ last_ticket_number_for_transport }} + 1;
             $('.last_ticket_number').text('{{ last_ticket_number_for_transport }}');
             $('#id_ticket_number').val($last_number_input);
         }
         else{
-            $last_ticket.hide();
+            $last_ticket.slideUp();
+            $address.slideUp();
             $('#id_ticket_number').val('');
         }
 

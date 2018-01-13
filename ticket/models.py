@@ -69,6 +69,7 @@ class Ticket(models.Model):
     month = models.CharField(max_length=2, blank=False, null=False, choices=monthes, default=clear, verbose_name='month')
     phone_number = models.CharField(max_length=12, blank=False, null=False, default='',
                                     verbose_name='client phone number')
+    address = models.CharField(max_length=32, blank=True, null=True, default='', verbose_name='address')
     carpets_nmb = models.SmallIntegerField(blank=True, null=True, default=0, verbose_name='carpets number')
     status = models.ForeignKey(StatusForTicket, on_delete=models.CASCADE, default=1,
                                verbose_name='status')
@@ -121,10 +122,17 @@ class Carpet(models.Model):
 
     #sprawdzamy statusy dawanów w zlecenia. jeżeli dywan zmienił się status na 'zw', to dodajemy 1 do carpets_ready_nmb
     # w Ticket
+    #jeżeli status dywanu się zmienił z zwiniętego na jaki kolwiekinny, to odejmujemy 1 od carpets_ready_nmb jeżeli jest
+    #większe od 0
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if self.status == StatusForCarpet.objects.get(short_title='zw'):
             self.ticket.carpets_ready_nmb += 1
+            self.ticket.save()
+        else:
+            if self.ticket.carpets_ready_nmb > 0:
+                self.ticket.carpets_ready_nmb -= 1
+            self.ticket.is_ready = False
             self.ticket.save()
         return super(Carpet, self).save()
 

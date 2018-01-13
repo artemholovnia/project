@@ -49,7 +49,7 @@
         {% if worker %}
             <a href="{% url 'logout' %}" class="light">Wylogować ({{ worker.user.username }}, {{ worker.position.title }})</a>
         {% else %}
-            <a href="#" class="danger">Zarejestruj pracownika</a>
+            <a href="{% url 'create_worker' %}" class="danger">Zarejestruj pracownika</a>
         {% endif %}
     </span>
 
