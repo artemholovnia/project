@@ -11,4 +11,10 @@ urlpatterns = [
     url(r'^delete_ticket=(?P<ticket_identificator>\w+)/$', views.delete_ticket, name='delete_ticket'),
     url(r'^delete_carpet/ticket=(?P<ticket_identificator>\w+)&id=(?P<carpet_id>\d+)/$', views.delete_carpet, name='delete_carpet'),
     url(r'^update_carpet/ticket=(?P<ticket_identificator>\w+)&id=(?P<carpet_id>\d+)/$', views.update_carpet, name='update_carpet'),
+    url(r'^generate_ticket/ticket=(?P<ticket_identificator>\w+)/$', views.generate_ticket, name='generate_ticket'),
+
+    url(r'^download_ticket/ticket=(?P<ticket_identificator>\w+)/$', views.download_ticket_document,
+        name='download_ticket_document'),
+    url(r'^delete_ticket_document/ticket=(?P<ticket_identificator>\w+)/$', views.delete_ticket_document,
+        name='delete_ticket_document'),
 ]

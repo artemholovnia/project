@@ -19,6 +19,7 @@ class GetPermission(TemplateView):
         except Worker.DoesNotExist:
             user_permission = 0
         context['user_permission'] = user_permission
+        context['worker'] = Worker.objects.get(user= get_user(self.request))
         if user_permission == 0:
             context['redirect_url'] = reverse('all_tickets')
         return context

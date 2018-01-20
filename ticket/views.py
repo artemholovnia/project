@@ -7,18 +7,24 @@ from django.views.generic.edit import FormView
 from django.contrib import auth
 from .models import *
 from worker_registration.models import *
+from .generate_ticket import generate_ticket_document
 from django.shortcuts import get_list_or_404, get_object_or_404
 from .forms import *
 from django.utils.timezone import datetime
 from django.urls import reverse
 import string
 import random
+import os
+from easy_pdf.views import PDFTemplateView
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PATH = os.path.join(BASE_DIR, 'static/media/tickets_docs/' + datetime.today().strftime('%d-%m-%Y'))
 
 COAST_PER_M = 15
 COAST_N = 6
 COAST_I = 6
 COAST_O = 10
-COAST_R = 3
+COAST_R = 6
 COAST_S = 2
 
 LOGIN_URL = '/authentication/login/'
@@ -103,6 +109,13 @@ class TicketDetail(BaseView, DetailView, FormView):
         context['carpet_update_form'] = CarpetUpdateForm
         context['carpets_ready'] = Carpet.objects.filter(ticket_id=self.object.id)
         context['carpets_nmb'] = self.object.carpets_nmb - get_carpets_nmb(self.object.identificator)
+        try:
+            is_saved = TicketSaved.objects.get(ticket_identificator=self.object.identificator)
+            context['is_saved'] = True
+            context['saved_ticket_file_name'] = is_saved.file_name[1:]
+        except TicketSaved.DoesNotExist:
+            context['is_saved'] = False
+
         return context
 
 @method_decorator(login_required(login_url=LOGIN_URL), name='dispatch')
@@ -158,6 +171,7 @@ class TicketCreate(BaseView, FormView):
         self.success_url = '/ticket/detail=' + identificator + '/'
         return redirect(self.success_url)
 
+
 #poszukiwanie
 @login_required(login_url=LOGIN_URL)
 def filtering_data(request):
@@ -188,16 +202,16 @@ def calculate_ticket_coast(request, ticket_identificator):
             carpet_additionals = [carpet.neutralization, carpet.impregnation, carpet.ozon, carpet.roztocz,
                                   carpet.siersc]
             if carpet.neutralization:
-                per_m += 6
+                per_m += COAST_N
             if carpet.impregnation:
-                per_m += 6
+                per_m += COAST_I
             if carpet.ozon:
-                coast += 10
+                coast += COAST_O
             if carpet.roztocz:
-                per_m += 3
+                per_m += COAST_R
             if carpet.siersc:
-                per_m += 2
-            coast += carpet_size * per_m
+                per_m += COAST_S
+            coast += int(carpet_size * per_m)
             carpet.coast = coast
             carpet.save()
             carpets_coastes.append(coast)
@@ -271,5 +285,34 @@ def change_status(request, ticket_identificator, carpet_id, short_title):
         carpet = Carpet.objects.get(id=carpet_id)
         carpet.status = StatusForCarpet.objects.get(short_title=short_title)
         carpet.save(update_fields='status')
+        return redirect(reverse('ticket_detail', args=[ticket_identificator]))
+
+#####################
+#DOCUMENT
+
+#generate tikcet
+#@login_required(login_url=LOGIN_URL)
+def generate_ticket(request, ticket_identificator):
+    if request.method == 'GET':
+        generate_ticket_document(ticket_identificator)
+        return redirect(reverse('ticket_detail', args=[ticket_identificator]))
+
+#pobieranie kwitu
+@login_required(login_url=LOGIN_URL)
+def download_ticket_document(request, ticket_identificator):
+    download_ticket = get_object_or_404(TicketSaved, ticket_identificator=ticket_identificator)
+    if request.method == 'GET':
+        with open(os.path.join(BASE_DIR, 'static/media/tickets_docs/CV_Artem_Holovnia.pdf'), 'rb') as file:
+            response= HttpResponse(file.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'inline; filename=' + download_ticket.file_name
+            return response
+
+#usunięncie kwitu z servera
+@login_required(login_url=LOGIN_URL)
+def delete_ticket_document(request, ticket_identificator):
+    deleted_ticket = get_object_or_404(TicketSaved, ticket_identificator=ticket_identificator)
+    if request.method == 'GET':
+        os.remove(deleted_ticket.path + deleted_ticket.file_name)
+        deleted_ticket.delete()
         return redirect(reverse('ticket_detail', args=[ticket_identificator]))
 

@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from worker_registration.models import *
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PATH = os.path.join(BASE_DIR, 'static/media/tickets_docs/error')
 
 clear = '0'
 STYCZEN = '1'
@@ -142,6 +146,19 @@ class Carpet(models.Model):
         self.ticket.coast = 0
         self.ticket.save()
         return super(Carpet, self).delete()
+
+class Services(models.Model):
+    neutralization = models.SmallIntegerField(blank=False, null=False, verbose_name='neutralization')
+    ozon = models.SmallIntegerField(blank=False, null=False, verbose_name='ozon')
+    impregnation = models.SmallIntegerField(blank=False, null=False, verbose_name='impregnation')
+    siersc = models.SmallIntegerField(blank=False, null=False, verbose_name='siersc')
+    roztocz = models.SmallIntegerField(blank=False, null=False, verbose_name='roztocz')
+
+class TicketSaved(models.Model):
+    ticket_identificator = models.CharField(max_length=8, blank=False, null=False, default='')
+    path = models.CharField(max_length=256, blank=False, null=False, default=PATH)
+    file_name = models.CharField(max_length=32, blank=False, null=False, default='')
+
 
 
 

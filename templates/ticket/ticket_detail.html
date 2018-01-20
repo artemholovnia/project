@@ -6,7 +6,31 @@
             <div class="row text-center">
                 <div class="col"><h2>Informacja zlecenia</h2></div>
                 {% if ticket.is_ready %}
-                        <div class="col-12 col-sm"><a href="#"><button class="btn btn-dark">WYDRUKOWAĆ</button></a></div>
+                        <div class="col-12 col-sm"><a href="{% url 'generate_ticket' ticket.identificator %}">
+                            <button class="btn btn-dark">
+                                Zapisz do bazy
+                                {% if is_saved %}<h6>{{ saved_ticket_file_name }}</h6>{% endif %}
+                            </button></a>
+                        </div>
+
+                        {% if is_saved %}
+                        <div class="col-12 col-sm"><a href="{% url 'download_ticket_document' ticket.identificator %}">
+                            <button class="btn btn-dark">
+                                Otwórz
+                                <h6>{{ saved_ticket_file_name }}</h6>
+                            </button></a>
+                        </div>
+                        {% endif %}
+
+                        {% if is_saved %}
+                        <div class="col-12 col-sm">
+                            <a href="{% url 'delete_ticket_document' ticket.identificator %}"><button class="btn btn-danger">
+                                Usuń dokument
+                                <h6>{{ saved_ticket_file_name }}</h6>
+                            </button></a>
+                        </div>
+                        {% endif %}
+
                         <div class="col-12 col-sm"><a href="{% url 'calculate_ticket_coast' ticket.identificator %}">
                             <button class="btn btn-dark">Podlić cenę</button></a></div>
                 {% endif %}

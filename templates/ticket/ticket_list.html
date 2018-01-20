@@ -40,9 +40,6 @@
                     <td>{{ ticket.carpets_nmb }}</td>
                     <td>{{ ticket.phone_number }}</td>
                     <td><ul>
-                        {% if ticket.is_ready %}
-                            <li><a href="#"><button class="btn btn-dark">Wydrukować podtwierdzenie</button></a></li>
-                        {% endif %}
                         <li><a href="{% url 'ticket_detail' ticket.identificator %}"><button class="btn btn-dark">Podgląd</button></a></li>
                         <li><a href="{% url 'delete_ticket' ticket.identificator %}"><button class="btn btn-danger">Usuń</button></a></li>
                     </ul></td>
