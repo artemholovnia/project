@@ -15,7 +15,6 @@ from django.urls import reverse
 import string
 import random
 import os
-from easy_pdf.views import PDFTemplateView
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PATH = os.path.join(BASE_DIR, 'static/media/tickets_docs/' + datetime.today().strftime('%d-%m-%Y'))
