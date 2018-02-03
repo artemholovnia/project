@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'admin_site',
+    'record',
 ]
 
 MIDDLEWARE = [
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pl_PL'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -133,3 +134,22 @@ STATICFILES_DIRS = (
 )
 
 #from prod_settings import *
+
+
+#MAKE LOG DIR
+import pathlib
+import os
+
+LOG_DIRS = {
+    'worker' : 'worker_logs',
+    'ticket' : 'ticket_logs',
+    'carpet' : 'carpet_logs',
+    'record' : 'record_logs',
+
+}
+
+for dir in LOG_DIRS:
+    APP_LOG_PATH = os.path.join(BASE_DIR, 'static/app_log/' + LOG_DIRS.get(dir))
+    APP_LOG_FILE = pathlib.Path(APP_LOG_PATH).mkdir(parents=True, exist_ok=True)
+    APP_FILE = pathlib.Path(APP_LOG_PATH + '/' + dir + '.logs').touch(exist_ok=True)
+

@@ -7,13 +7,14 @@ import os
 from django.utils.timezone import datetime
 import pathlib
 
-
-COAST_PER_M = 15
-COAST_N = 6
-COAST_I = 6
-COAST_O = 10
-COAST_R = 6
-COAST_S = 2
+services = Services.objects.get(id=1)
+COAST_PER_M = services.per_m
+COAST_N = services.neutralization
+COAST_I = services.impregnation
+COAST_O = services.ozon
+COAST_R = services.roztocz
+COAST_S = services.siersc
+COAST_EXSPRESS = services.express
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PATH = os.path.join(BASE_DIR, 'static/media/tickets_docs/' + datetime.today().strftime('%d-%m-%Y'))
@@ -101,9 +102,11 @@ def generate_ticket_document(ticket_identificator):
             work_sheet[carpet_r_pos_paste] = '+'
 
         carpet_coast += carpet.height * carpet.width * carpet_per_m
+        if ticket.is_express:
+            carpet_coast *= COAST_EXSPRESS
         carpet_coast_pos = POSITIONS.get('carpet_coast').split('/')
         carpet_coast_pos_paste = carpet_coast_pos[0] + str(int(carpet_coast_pos[1]) + itteration)
-        work_sheet[carpet_coast_pos_paste] = str(int(carpet_coast)) + ' zł'
+        work_sheet[carpet_coast_pos_paste] = str(carpet_coast) + ' zł'
 
 
 

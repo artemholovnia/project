@@ -1,22 +1,31 @@
 {% extends 'base_template.html' %}
 {% block title %}Detail {{ ticket.ticket_number }}{% endblock %}
 {% block content %}
+
+    <div id="alert_block">
+        <h2>Chcesz usunąć?</h2>
+        <button id="confirm_action_success" class="btn btn-dark">TAK</button>
+        <button id="confirm_action_cancel" class="btn btn-dark">NIE</button>
+    </div>
+
     <div class="container">
         <div class="inside-container">
             <div class="row text-center">
                 <div class="col"><h2>Informacja zlecenia</h2></div>
                 {% if ticket.is_ready %}
-                        <div class="col-12 col-sm"><a href="{% url 'generate_ticket' ticket.identificator %}">
-                            <button class="btn btn-dark">
-                                Zapisz do bazy
-                                {% if is_saved %}<h6>{{ saved_ticket_file_name }}</h6>{% endif %}
-                            </button></a>
-                        </div>
+                        {% if ticket.coast != 0 %}
+                            <div class="col-12 col-sm"><a href="{% url 'generate_ticket' ticket.identificator %}">
+                                <button class="btn btn-dark">
+                                    Zapisz do bazy
+                                    {% if is_saved %}<h6>{{ saved_ticket_file_name }}</h6>{% endif %}
+                                </button></a>
+                            </div>
+                        {% endif %}
 
                         {% if is_saved %}
                         <div class="col-12 col-sm"><a href="{% url 'download_ticket_document' ticket.identificator %}">
                             <button class="btn btn-dark">
-                                Otwórz
+                                Pobierz
                                 <h6>{{ saved_ticket_file_name }}</h6>
                             </button></a>
                         </div>
@@ -34,11 +43,11 @@
                         <div class="col-12 col-sm"><a href="{% url 'calculate_ticket_coast' ticket.identificator %}">
                             <button class="btn btn-dark">Podlić cenę</button></a></div>
                 {% endif %}
-                <div class="col-12 col-sm"><a href="#"><button class="btn btn-dark">Zmień status</button></a></div>
-                <div class="col-12 col-sm"><a href="{% url 'delete_ticket' ticket.identificator %}">
-                    <button class="btn btn-danger">Usuń</button></a></div>
+                <!--<div class="col-12 col-sm"><a href=""><button class="btn btn-dark">Zmień</button></a></div>-->
+                <div class="col-12 col-sm"><a>
+                    <button class="btn btn-danger" onclick='confirm_action(event, "{% url 'delete_ticket' ticket.identificator %}")'>
+                        Usuń</button></a></div>
             </div>
-
             <div class="row">
                 <div class="col table-responsive">
                     <table class="table table-bordered">
@@ -156,6 +165,7 @@
 
         $('#carpet').hide();
         $('#carpet_ready').hide();
+        $('#alert_block').hide();
 
         function open_carpet(){
             $('#carpet').slideToggle();
@@ -247,6 +257,21 @@
             $('#id_height :last').val($height);
 
         };
+
+        /*confirm action*/
+        function confirm_action(event, success_url){
+            event.preventDefault();
+            $('#alert_block').slideDown();
+
+            $('#confirm_action_cancel').on('click', function () {
+                $('#alert_block').slideUp();
+            })
+
+            $('#confirm_action_success').on('click', function () {
+                $('#alert_block').slideUp();
+                document.location.href = success_url;
+            })
+        }
 
 
         /*AJAX create carpet*/

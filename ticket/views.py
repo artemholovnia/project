@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, DetailView, View
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.contrib import auth
 from .models import *
 from worker_registration.models import *
@@ -15,16 +15,21 @@ from django.urls import reverse
 import string
 import random
 import os
+#from twilio.rest import Client as ClientMessage
 
+DATE_FORMAT = '%d-%m-%Y'
+TIME_FORMAT = '%H:%M'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PATH = os.path.join(BASE_DIR, 'static/media/tickets_docs/' + datetime.today().strftime('%d-%m-%Y'))
+PATH = os.path.join(BASE_DIR, 'static/media/tickets_docs/' + datetime.today().strftime(DATE_FORMAT))
 
-COAST_PER_M = 15
-COAST_N = 6
-COAST_I = 6
-COAST_O = 10
-COAST_R = 6
-COAST_S = 2
+services = Services.objects.get(id=1)
+COAST_PER_M = services.per_m
+COAST_N = services.neutralization
+COAST_I = services.impregnation
+COAST_O = services.ozon
+COAST_R = services.roztocz
+COAST_S = services.siersc
+COAST_EXSPRESS = services.express
 
 LOGIN_URL = '/authentication/login/'
 IDENTIFICATOR_FOR_TICKET = 8
@@ -48,7 +53,6 @@ def get_carpets_nmb(ticket_identificator):
 #Базовый класс с набором стандартного context data для всех представлений
 @method_decorator(login_required(login_url=LOGIN_URL), name='dispatch')
 class BaseView(View):
-    #template_name = ['base_template.html', 'ticket_detail.html']
 
 #app_name - название приложения
 #active_tickets - объекты всех существующий активных квитанций
@@ -60,6 +64,7 @@ class BaseView(View):
             worker = False
         context['worker'] = worker
         context['app_name'] = 'ticket'
+        context['date_today'] = datetime.today().strftime(DATE_FORMAT)
         return context
 
 #Представление всех квитанций
@@ -79,6 +84,32 @@ class Tickets(BaseView, ListView):
     def get_context_data(self, **kwargs):
         self.object_list = self.get_queryset() #c этой строкой работает второй класс BaseView
         return super(Tickets, self).get_context_data(**kwargs)
+
+@method_decorator(login_required(login_url=LOGIN_URL), name='dispatch')
+class TicketsFiltering(BaseView, ListView):
+    template_name = 'ticket/ticket_list.html'
+    context_object_name = 'tickets'
+    
+    def get_ordering(self):
+        self.ordering = ['-created']
+        return super(TicketsFiltering, self).get_ordering()
+
+    def get_queryset(self):
+        self.object_list = []
+        kwargs = self.kwargs.get('filtering_text')
+        kwargs_list = kwargs.split('&')
+        tickets = get_list_or_404(Ticket)
+        for kwarg in kwargs_list:
+            for ticket in tickets:
+                tags_list = ticket.tags.split('-')
+                for tag in tags_list:
+                    if kwarg == tag:
+                        if ticket not in self.object_list:
+                            self.object_list.append(ticket)
+        return self.object_list
+
+    def get_context_data(self, **kwargs):
+        return super(TicketsFiltering, self).get_context_data(**kwargs)
 
 @method_decorator(login_required(login_url=LOGIN_URL), name='dispatch')
 class TicketDetail(BaseView, DetailView, FormView):
@@ -125,13 +156,14 @@ class TicketCreate(BaseView, FormView):
     def get_context_data(self, **kwargs):
         last_ticket_number_for_transport = 0
         last_ticket_number_for_personal = 0
+
         try:
-            transport_tickets = Ticket.objects.filter(client=Client.objects.get(name='Transport').id)
+            transport_tickets = Ticket.objects.filter(client=Client.objects.get(name='Transport'))
         except Ticket.DoesNotExist:
             transport_tickets = None
 
         try:
-            personal_tickets = Ticket.objects.filter(client=Client.objects.get(name='Osobisty').id)
+            personal_tickets = Ticket.objects.filter(client=Client.objects.get(name='Osobisty'))
         except Ticket.DoesNotExist:
             personal_tickets = None
 
@@ -170,21 +202,14 @@ class TicketCreate(BaseView, FormView):
         self.success_url = '/ticket/detail=' + identificator + '/'
         return redirect(self.success_url)
 
+@method_decorator(login_required(login_url=LOGIN_URL), name='dispatch')
+class EditTicket(BaseView, UpdateView):
+    model = Ticket
+    template_name = 'ticket/create_ticket.html'
+    fields = ('__all__')
+    slug_field = 'identificator'
+    slug_url_kwarg = 'ticket_identificator'
 
-#poszukiwanie
-@login_required(login_url=LOGIN_URL)
-def filtering_data(request):
-    ticket_list = []
-    if request.method == 'POST':
-        filtering_data_text = request.POST.get('filtering_data_text')
-        tickets = get_list_or_404(Ticket)
-        for ticket in tickets:
-            tags = ticket.tags
-            for tag in tags.split('-'):
-                if filtering_data_text == tag:
-                   ticket_list.append(ticket)
-        return render(request, 'ticket/ticket_list.html', {'tickets': ticket_list,
-                                                           'worker': Worker.objects.get(user=auth.get_user(request))})
 
 #wyliczenie ceny zlecenia
 @login_required(login_url=LOGIN_URL)
@@ -196,6 +221,9 @@ def calculate_ticket_coast(request, ticket_identificator):
         carpets_coastes = []
         for carpet in carpets:
             per_m = COAST_PER_M
+            if ticket.is_express:
+                per_m *= COAST_EXSPRESS
+            print(per_m)
             coast = 0
             carpet_size = carpet.height * carpet.width
             carpet_additionals = [carpet.neutralization, carpet.impregnation, carpet.ozon, carpet.roztocz,
@@ -210,7 +238,7 @@ def calculate_ticket_coast(request, ticket_identificator):
                 per_m += COAST_R
             if carpet.siersc:
                 per_m += COAST_S
-            coast += int(carpet_size * per_m)
+            coast += carpet_size * per_m
             carpet.coast = coast
             carpet.save()
             carpets_coastes.append(coast)
@@ -301,8 +329,8 @@ def generate_ticket(request, ticket_identificator):
 def download_ticket_document(request, ticket_identificator):
     download_ticket = get_object_or_404(TicketSaved, ticket_identificator=ticket_identificator)
     if request.method == 'GET':
-        with open(os.path.join(BASE_DIR, 'static/media/tickets_docs/CV_Artem_Holovnia.pdf'), 'rb') as file:
-            response= HttpResponse(file.read(), content_type='application/pdf')
+        with open(download_ticket.path + download_ticket.file_name, 'rb') as file:
+            response= HttpResponse(file.read(), content_type='application/xls')
             response['Content-Disposition'] = 'inline; filename=' + download_ticket.file_name
             return response
 
@@ -315,3 +343,18 @@ def delete_ticket_document(request, ticket_identificator):
         deleted_ticket.delete()
         return redirect(reverse('ticket_detail', args=[ticket_identificator]))
 
+def send_message(request):
+
+    # Your Account SID from twilio.com/console
+    account_sid = 'AC4f7e8463b6cf70399fb760cafd5e8f27'
+    # Your Auth Token from twilio.com/console
+    auth_token = '8ebfdc7f9f88284a3073ce0982d92e3c'
+
+    client = ClientMessage(account_sid, auth_token)
+
+    message = client.messages.create(
+        to="+48535806491",
+        from_="+48814784651",
+        body="Hello from Python!")
+
+    print(message.sid)

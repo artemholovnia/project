@@ -1,11 +1,12 @@
 {% extends 'base_template.html' %}
 {% block title %}Ticket list{% endblock %}
 {% block content %}
+    <h3>Dzisiaj: {{ date_today }}</h3>
     <div class="container">
         <div class="inside-container">
             <div class="row text-center">
                 <div class="col-12">
-                    <form action="{% url 'filtering_data' %}" method="post">{% csrf_token %}
+                    <form action="/test/" method="get" id="filtering_data">{% csrf_token %}
                         <input type="text" class="find" name="filtering_data_text">
                         <input type="submit" class="btn btn-dark" value="Szukaj">
                     </form>
@@ -59,4 +60,13 @@
 {% endblock %}
 
 {% block scripts %}
+    <script>
+        $('form#filtering_data').submit(function (e) {
+            e.preventDefault();
+            $href = '/ticket/filter=';
+            var filtering_data_list = $(this).find('input[name="filtering_data_text"]').val().split(' ');
+            $href += filtering_data_list.join('&');
+            document.location.href = $href;
+        })
+    </script>
 {% endblock %}

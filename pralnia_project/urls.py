@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^ticket/', include('ticket.urls'), name='ticket'),
     url(r'^authentication/', include('authentication.urls'), name='authentication'),
     url(r'^admin_site/', include('admin_site.urls'), name='admin'),
+    url(r'records/', include('record.urls'), name='records'),
 ]

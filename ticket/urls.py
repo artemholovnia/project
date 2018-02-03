@@ -4,7 +4,6 @@ from . import views
 
 urlpatterns = [
     url(r'^all/$', views.Tickets.as_view(), name='all_tickets'),
-    url(r'filtering_tickets/$', views.filtering_data, name='filtering_data'),
     url(r'^detail=(?P<ticket_identificator>\w+)/$', views.TicketDetail.as_view(), name='ticket_detail'),
     url(r'^calculate_ticket_coast=(?P<ticket_identificator>\w+)', views.calculate_ticket_coast, name='calculate_ticket_coast'),
     url(r'^create_ticket/$', views.TicketCreate.as_view(), name='create_ticket'),
@@ -17,4 +16,8 @@ urlpatterns = [
         name='download_ticket_document'),
     url(r'^delete_ticket_document/ticket=(?P<ticket_identificator>\w+)/$', views.delete_ticket_document,
         name='delete_ticket_document'),
+
+    url(r'^filter=(?P<filtering_text>.+)/$', views.TicketsFiltering.as_view(), name='filtering_data'),
+
+    url(r'^send_message/$', views.send_message, name='send_message'),
 ]

@@ -78,3 +78,16 @@ label{
     color: #2E2F31;
     font-size: 2em;
 }
+
+#alert_block{
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.66);
+    height: 100%;
+    width: 100%;
+    color: #ffffff;
+    z-index: 100;
+    text-align: center;
+    padding-top: 75px;
+}
+
+
