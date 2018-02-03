@@ -70,7 +70,8 @@ def generate_ticket_document(ticket_identificator):
         carpet_attentions_pos = POSITIONS.get('carpet_attentions').split('/')
         carpet_attentions_pos_paste = carpet_attentions_pos[0] + str(int(carpet_attentions_pos[1]) + itteration)
         work_sheet[carpet_attentions_pos_paste] = '-'
-
+        if ticket.is_express:
+            carpet_per_m *= COAST_EXSPRESS
         if carpet.neutralization:
             carpet_per_m += COAST_N
             carpet_n_pos = POSITIONS.get('carpet_n').split('/')
