@@ -1,0 +1,78 @@
+{% extends 'home_page.html' %}
+
+{% block title %}PrestigeClean Lublin{% endblock %}
+
+{% block content %}
+            <div id="existed_order">
+            <table class="table">
+                <tr>
+                    <th>Numer zamówienia</th>
+                    <td id="order_number"></td>
+                </tr>
+                <tr>
+                    <th>Numer telefonu</th>
+                    <td id="phone_number"></td>
+                </tr>
+                <tr>
+                    <th>Cena usługi</th>
+                    <td id="order_coast"></td>
+                </tr>
+            </table>
+            </div>
+            <form action="{% url 'home_page' %}" method="POST" id="order_verification">{% csrf_token %}
+
+                <div class="form-group">
+                    <label for="order_number">Numer zamówienia</label>
+                    {{ order_verification_form.order_number }}
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Numer telefonu</label>
+                    {{ order_verification_form.phone_number }}
+                </div>
+                <input type="submit" value="Szukaj">
+            </form>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        $('#existed_order').hide();
+
+        var order_number_val = '';
+        var phone_number_val = '';
+        var csrfmiddlewaretoken = '';
+        $('#order_verification').submit(function (e) {
+            e.preventDefault();
+            order_number_val = $('#id_order_number').val();
+            phone_number_val = $('#id_phone_number').val();
+            csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
+
+            $.ajax({
+            url:'{% url "ajax_order_verification" %}',
+            dataType:'json',
+            method:'POST',
+            data:{
+                'csrfmiddlewaretoken':csrfmiddlewaretoken,
+                'order_number': order_number_val,
+                'phone_number': phone_number_val,
+            },
+            success:function (json_response) {
+                $('#order_verification').slideUp();
+                $('#order_number').html(json_response.order_number);
+                $('#phone_number').html(json_response.phone_number);
+                $('#order_coast').html(json_response.coast + ' zł');
+                $('#existed_order').slideDown();
+
+            },
+            error:function () {
+                console.log('error')
+            }
+        })
+        });
+
+        $(function () {
+        $('#id_phone_number').mask("999-999-999");
+    });
+
+    </script>
+{% endblock %}

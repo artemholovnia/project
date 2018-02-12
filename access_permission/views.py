@@ -23,3 +23,5 @@ class GetPermission(TemplateView):
         if user_permission == 0:
             context['redirect_url'] = reverse('all_tickets')
         return context
+
+

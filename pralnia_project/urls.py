@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from access_permission.views import GetPermission
+from home_page.views import HomePage, ajax_order_verification
 
 urlpatterns = [
-    url(r'^$', GetPermission.as_view(), name='get_permission'),
+    url(r'^$', HomePage.as_view(), name='home_page'),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls'), name='api'),
     url(r'^ticket/', include('ticket.urls'), name='ticket'),
     url(r'^authentication/', include('authentication.urls'), name='authentication'),
     url(r'^admin_site/', include('admin_site.urls'), name='admin'),
     url(r'records/', include('record.urls'), name='records'),
+    url(r'verification_order/', ajax_order_verification, name='ajax_order_verification')
 ]
