@@ -3,8 +3,9 @@
  */
 
 $(window).on('load', function () {
-    $wrapper = $('#wrapper_background'),
+    $wrapper = $('#wrapper_background');
     $wrapper.delay(1200).fadeOut();
+    $('body, html').css('overflowY', 'auto');
 });
 
 /*hide elements...arg=list*/
