@@ -2,7 +2,8 @@
 {% block title %}Dodawanie kwitu{% endblock %}
 {% block content %}
     <div class="container">
-        <div class="row"><div class="last_ticket col-sm-12 bg-info text-center">Ostatni dodany numer kwitu: <span class="last_ticket_number"></span></div></div>
+        <div class="row"><div class="last_ticket col-sm-12 bg-info text-center" id="last_ticket">Ostatni dodany numer kwitu:
+            <span class="last_ticket_number" id="last_ticket_number"></span></div></div>
         <div class="inside-container">
             <form action="{% url 'create_ticket' %}" method="POST">{% csrf_token %}
                 <div class="form-group">
@@ -22,7 +23,7 @@
                     {{ form.address }}
                 </div>
                 <div class="form-group">
-                    <label class="text-muted">Number klienta</label>
+                    <label class="text-muted">Numer klienta</label>
                     {{ form.phone_number }}
                 </div>
                 <div class="form-group">
@@ -48,10 +49,8 @@
 
 {% block scripts %}
     <script>
-
-    $('#id_month').change(function () {
-        console.log($('#id_month option:selected').val());
-    });
+    elements = ['#last_ticket', '#address'];
+    hide_elements(elements);
 
     /*resetujemy wszystkie input*/
     $('#id_carpets_nmb').val('');
@@ -60,13 +59,11 @@
     $(function () {
         $('#id_month option[value="{{ month_for_select }}"]').attr("selected", "selected");
     });
+    /*--------------------*/
 
-    $(function () {
-        $('#id_phone_number').mask("999-999-999");
-    });
-
-    $last_ticket = $('.last_ticket').hide();
-    $address = $('#address').hide();
+    /*show last number of ticket*/
+    $last_ticket=$('#last_ticket');
+    $address=$('#address');
 
     $('#id_client').change(function () {
         $selected = $(this).find(':selected').text().toLowerCase();
@@ -74,14 +71,14 @@
             $last_ticket.slideDown();
             $address.slideUp();
             $last_number_input = {{ last_ticket_number_for_personal }} + 1;
-            $('.last_ticket_number').text('{{ last_ticket_number_for_personal }}');
+            $('#last_ticket_number').text('{{ last_ticket_number_for_personal }}');
             $('#id_ticket_number').val($last_number_input);
         }
         else if ($selected == 'transport'){
             $last_ticket.slideDown();
             $address.slideDown();
             $last_number_input = {{ last_ticket_number_for_transport }} + 1;
-            $('.last_ticket_number').text('{{ last_ticket_number_for_transport }}');
+            $('#last_ticket_number').text('{{ last_ticket_number_for_transport }}');
             $('#id_ticket_number').val($last_number_input);
         }
         else{
@@ -91,6 +88,7 @@
         }
 
     });
+    /*---------------------------*/
 
     </script>
 {% endblock %}

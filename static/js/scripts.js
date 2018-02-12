@@ -2,15 +2,24 @@
  * Created by Python on 28.05.2017.
  */
 
-
-
 $(window).on('load', function () {
-    var $preloader = $('#page-preloader'),
-        $spinner   = $preloader.find('.preloader');
-    $spinner.fadeOut();
-    $preloader.delay(350).fadeOut('slow');
+    $wrapper = $('#wrapper_background'),
+    $wrapper.delay(1200).fadeOut();
 });
 
+/*hide elements...arg=list*/
+    function hide_elements(elements){
+        for (i=0; i<elements.length; i++){
+            $(elements[i]).hide();
+        }
+    };
+/*-------------------------*/
+
+/*mask number with id=id_phone_number*/
+    $(function () {
+    $('#id_phone_number').mask("999-999-999");
+    });
+/*-----------*/
 
 $(document).ready(function () {
 
@@ -20,14 +29,7 @@ $(document).ready(function () {
         console.log(surface);
         return surface;
     }
-
-    /*Clients number*/
-    $('form #registration-client').submit(function (e) {
-        e.preventDefault();
-        var form = $('form #registration-client');
-        console.log(form);
-
-    });
+    /*--------------*/
 
     /*Маска */
     !function (factory) {
@@ -221,12 +223,6 @@ $(document).ready(function () {
         });
     });
 
-    /*Mask phone number*/
-    $("#phone_number").mask("+48-999-999-999");
-    jQuery(function ($) {
-        $("#phone_number").mask("+48-999-999-999");
-    });
-    /**************************/
 });
 
 

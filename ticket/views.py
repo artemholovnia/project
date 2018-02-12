@@ -226,8 +226,6 @@ def calculate_ticket_coast(request, ticket_identificator):
             print(per_m)
             coast = 0
             carpet_size = carpet.height * carpet.width
-            carpet_additionals = [carpet.neutralization, carpet.impregnation, carpet.ozon, carpet.roztocz,
-                                  carpet.siersc]
             if carpet.neutralization:
                 per_m += COAST_N
             if carpet.impregnation:

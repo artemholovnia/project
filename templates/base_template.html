@@ -11,9 +11,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/ticket.css' %}">
+    <link rel="stylesheet" href="{% static 'css/wrapper.css' %}">
     <script src="{% static 'js/mask.js' %}"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
 </head>
 <body>
+
+<div id="wrapper_background">
+<div class="wrapper" id="wrapper">
+  <span class="ball"></span>
+  <span class="ball"></span>
+  <span class="ball"></span>
+  <span class="ball"></span>
+</div>
+<div class="drop-shadow"></div>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <defs>
+    <filter id="ball">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="ball" />
+      <feBlend in="SourceGraphic" in2="ball" />
+    </filter>
+  </defs>
+</svg>
+</div>
 
 {% if user.is_authenticated %}
 <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
@@ -24,6 +45,9 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'home_page' %}">Strona główna</a>
+        </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'create_ticket' %}">Dodaj kwit</a>
       </li>

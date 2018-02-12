@@ -79,12 +79,12 @@ class Ticket(models.Model):
     client = models.ForeignKey(Client, on_delete=models.DO_NOTHING, verbose_name='client')
     worker = models.ForeignKey(Worker, on_delete=models.DO_NOTHING, verbose_name='created_by')
     identificator = models.CharField(max_length=8, blank=False, null=False, default='', verbose_name='identificator')
-    ticket_number = models.CharField(max_length=8, blank=True, null=True, default='', verbose_name='ticket number')
+    ticket_number = models.CharField(max_length=8, blank=False, null=False, default='', verbose_name='ticket number')
     month = models.CharField(max_length=2, blank=False, null=False, choices=monthes, default=clear, verbose_name='month')
     phone_number = models.CharField(max_length=12, blank=False, null=False, default='',
                                     verbose_name='client phone number')
     address = models.CharField(max_length=32, blank=True, null=True, default='', verbose_name='address')
-    carpets_nmb = models.SmallIntegerField(blank=True, null=True, default=0, verbose_name='carpets number')
+    carpets_nmb = models.SmallIntegerField(blank=False, null=False, default=0, verbose_name='carpets number')
     status = models.ForeignKey(StatusForTicket, on_delete=models.CASCADE, default=1,
                                verbose_name='status')
     created = models.DateTimeField(blank=False, null=False, auto_now_add=True, verbose_name='created in')

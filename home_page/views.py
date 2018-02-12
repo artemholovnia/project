@@ -11,7 +11,6 @@ from django.core import serializers
 
 LOGIN_URL = '/authentication/login/'
 
-@method_decorator(login_required(login_url=LOGIN_URL), name='dispatch')
 class HomePage(TemplateView):
     template_name = 'home_page/home_page.html'
 
@@ -30,11 +29,13 @@ def ajax_order_verification(request):
             tickets = Ticket.objects.filter(phone_number=phone_number)
             for ticket in tickets:
                 if ticket.ticket_number.split('/')[0] == order_number and ticket.coast != 0:
+                    json_response['is_existed'] = True
                     json_response['order_number'] = ticket.ticket_number
                     json_response['phone_number'] = ticket.phone_number
                     json_response['coast'] = ticket.coast
             return JsonResponse(json_response)
         except Ticket.DoesNotExist:
+
             return HttpResponse(status=404)
 
 

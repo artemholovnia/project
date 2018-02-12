@@ -3,22 +3,24 @@
 {% block title %}PrestigeClean Lublin{% endblock %}
 
 {% block content %}
+            <div class="text-danger text-center" id="order_does_not_exist"><h4>Zamówienie nie znalezniono. Spróbuj jeszcze raz.</h4></div>
             <div id="existed_order">
-            <table class="table">
-                <tr>
-                    <th>Numer zamówienia</th>
-                    <td id="order_number"></td>
-                </tr>
-                <tr>
-                    <th>Numer telefonu</th>
-                    <td id="phone_number"></td>
-                </tr>
-                <tr>
-                    <th>Cena usługi</th>
-                    <td id="order_coast"></td>
-                </tr>
-            </table>
+                <table class="table">
+                    <tr>
+                        <th>Numer zamówienia</th>
+                        <td id="order_number"></td>
+                    </tr>
+                    <tr>
+                        <th>Numer telefonu</th>
+                        <td id="phone_number"></td>
+                    </tr>
+                    <tr>
+                        <th>Cena usługi</th>
+                        <td id="order_coast"></td>
+                    </tr>
+                </table>
             </div>
+
             <form action="{% url 'home_page' %}" method="POST" id="order_verification">{% csrf_token %}
 
                 <div class="form-group">
@@ -36,7 +38,9 @@
 {% block scripts %}
     <script>
 
-        $('#existed_order').hide();
+    /*hide elements*/
+        elements = ['#existed_order', '#order_does_not_exist'];
+        hide_elements(elements);
 
         var order_number_val = '';
         var phone_number_val = '';
@@ -57,22 +61,22 @@
                 'phone_number': phone_number_val,
             },
             success:function (json_response) {
-                $('#order_verification').slideUp();
-                $('#order_number').html(json_response.order_number);
-                $('#phone_number').html(json_response.phone_number);
-                $('#order_coast').html(json_response.coast + ' zł');
-                $('#existed_order').slideDown();
-
+                if (json_response.is_existed) {
+                    $('#order_does_not_exist').toggle();
+                    $('#order_verification').slideUp();
+                    $('#order_number').html(json_response.order_number);
+                    $('#phone_number').html(json_response.phone_number);
+                    $('#order_coast').html(json_response.coast + ' zł');
+                    $('#existed_order').slideDown();
+                } else {
+                    $('#order_does_not_exist').show();
+                    $('#order_verification').trigger('reset');
+                }
             },
-            error:function () {
-                console.log('error')
-            }
+            error: function () {}
         })
         });
 
-        $(function () {
-        $('#id_phone_number').mask("999-999-999");
-    });
 
     </script>
 {% endblock %}

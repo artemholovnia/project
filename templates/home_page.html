@@ -12,6 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/ticket.css' %}">
     <script src="{% static 'js/mask.js' %}"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
 </head>
 <body>
 <div class="worker_auth">
@@ -21,7 +22,10 @@
             <li><a href="{% url 'logout' %}">Wyłogować</a></li>
         </ul>
     {% else %}
-        <a href="{% url 'login' %}">Zaloguj się</a>
+        <ul>
+            <li><a href="{% url 'home_page' %}">Strona główna</a></li>
+            <li><a href="{% url 'login' %}">Zaloguj się</a></li>
+        </ul>
     {% endif %}
 </div>
 

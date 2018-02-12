@@ -59,8 +59,6 @@ def generate_ticket_document(ticket_identificator):
     work_sheet[POSITIONS.get('ended')] = datetime.today().strftime('%d-%m-%Y')
     work_sheet[POSITIONS.get('ticket_number')] = ticket.ticket_number
     for carpet in carpets:
-        carpet_per_m = COAST_PER_M
-        carpet_coast = 0
         itteration += 1
 
         carpet_size_pos = POSITIONS.get('carpet_size').split('/')
@@ -70,46 +68,34 @@ def generate_ticket_document(ticket_identificator):
         carpet_attentions_pos = POSITIONS.get('carpet_attentions').split('/')
         carpet_attentions_pos_paste = carpet_attentions_pos[0] + str(int(carpet_attentions_pos[1]) + itteration)
         work_sheet[carpet_attentions_pos_paste] = '-'
-        if ticket.is_express:
-            carpet_per_m *= COAST_EXSPRESS
         if carpet.neutralization:
-            carpet_per_m += COAST_N
             carpet_n_pos = POSITIONS.get('carpet_n').split('/')
             carpet_n_pos_paste = carpet_n_pos[0] + str(int(carpet_n_pos[1]) + itteration)
             work_sheet[carpet_n_pos_paste] = '+'
 
         if carpet.ozon:
-            carpet_coast += COAST_O
             carpet_o_pos = POSITIONS.get('carpet_o').split('/')
             carpet_o_pos_paste = carpet_o_pos[0] + str(int(carpet_o_pos[1]) + itteration)
             work_sheet[carpet_o_pos_paste] = '+'
 
         if carpet.impregnation:
-            carpet_per_m += COAST_I
             carpet_i_pos = POSITIONS.get('carpet_i').split('/')
             carpet_i_pos_paste = carpet_i_pos[0] + str(int(carpet_i_pos[1]) + itteration)
             work_sheet[carpet_i_pos_paste] = '+'
 
         if carpet.siersc:
-            carpet_per_m += COAST_S
             carpet_s_pos = POSITIONS.get('carpet_s').split('/')
             carpet_s_pos_paste = carpet_s_pos[0] + str(int(carpet_s_pos[1]) + itteration)
             work_sheet[carpet_s_pos_paste] = '+'
 
         if carpet.roztocz:
-            carpet_per_m += COAST_R
             carpet_r_pos = POSITIONS.get('carpet_r').split('/')
             carpet_r_pos_paste = carpet_r_pos[0] + str(int(carpet_r_pos[1]) + itteration)
             work_sheet[carpet_r_pos_paste] = '+'
 
-        carpet_coast += carpet.height * carpet.width * carpet_per_m
-        if ticket.is_express:
-            carpet_coast *= COAST_EXSPRESS
         carpet_coast_pos = POSITIONS.get('carpet_coast').split('/')
         carpet_coast_pos_paste = carpet_coast_pos[0] + str(int(carpet_coast_pos[1]) + itteration)
-        work_sheet[carpet_coast_pos_paste] = str(carpet_coast) + ' zł'
-
-
+        work_sheet[carpet_coast_pos_paste] = str(carpet.coast) + ' zł'
 
     ticket_number = ticket.ticket_number.split('/')
     ticket_saving_number = ticket_number[0] + '.' + ticket_number[1]

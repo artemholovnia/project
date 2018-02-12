@@ -6,7 +6,7 @@
         <div class="inside-container">
             <div class="row text-center">
                 <div class="col-12">
-                    <form action="/test/" method="get" id="filtering_data">{% csrf_token %}
+                    <form action="/test/" method="get" id="filtering_data" class="form">{% csrf_token %}
                         <input type="text" class="find" name="filtering_data_text">
                         <input type="submit" class="btn btn-dark" value="Szukaj">
                     </form>
@@ -68,5 +68,10 @@
             $href += filtering_data_list.join('&');
             document.location.href = $href;
         })
+
+    /*form is complite*/
+    $('.form').change(function () {
+        console.log($(this).length());
+    })
     </script>
 {% endblock %}
