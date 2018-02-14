@@ -1,82 +1,117 @@
 {% extends 'home_page.html' %}
+{% load staticfiles %}
 
 {% block title %}PrestigeClean Lublin{% endblock %}
 
 {% block content %}
-            <div class="text-danger text-center" id="order_does_not_exist"><h4>Zamówienie nie znalezniono. Spróbuj jeszcze raz.</h4></div>
-            <div id="existed_order">
-                <table class="table">
-                    <tr>
-                        <th>Numer zamówienia</th>
-                        <td id="order_number"></td>
-                    </tr>
-                    <tr>
-                        <th>Numer telefonu</th>
-                        <td id="phone_number"></td>
-                    </tr>
-                    <tr>
-                        <th>Cena usługi</th>
-                        <td id="order_coast"></td>
-                    </tr>
-                </table>
-            </div>
+    <div class="worker_auth">
+        <div class="row">
+            {% if user.is_authenticated %}
+                    <div class="col-2 text-center navbar-btn btn-login"><a href="{% url 'all_tickets' %}">
+                        <img src="{% static 'icons/login.svg' %}"></a>
+                    </div>
+                </a>
+            {% else %}
+                <div class="col text-center navbar-btn btn-primary"><a href="{% url 'login' %}">Załoguj się</a></div>
+            {% endif %}
+            <div class="col text-center navbar-btn btn-dark"><a href="{% url 'home_page' %}">Regulamin</a></div>
+            <div class="col text-center navbar-btn btn-dark"><a href="{% url 'home_page' %}">Kontakt</a></div>
+        </div>
+    </div>
+<!--Warning-->
+<div class="container container-fluid text-center warning-message col-12" id="order_does_not_exist">
+    <h5>Zamówienie nie znalezniono. Spróbuj jeszcze raz.</h5>
+</div>
 
-            <form action="{% url 'home_page' %}" method="POST" id="order_verification">{% csrf_token %}
+<div class="row">
+    <div class="form-table col col-sm-12">
+        <h3 class="col-12 text-center">Sprawdzanie stanu zamówienia</h3>
+        <form action="{% url 'ajax_order_verification' %}" method="POST" id="order_verification" class="col-12">{% csrf_token %}
+            <table class="form_table">
+                <tr>
+                    <td><label for="order_number" class="text-white">Numer zamówienia:</label></td>
+                    <td>{{ order_verification_form.order_number }}</td>
+                </tr>
+                <tr>
+                    <td><label for="order_number" class="text-white">Numer telefonu:</label></td>
+                    <td>{{ order_verification_form.phone_number }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="submit" value="Szukaj" class="btn-block btn-search">
+                        <span>Szukaj</span>
+                        <i href="{% static 'icons/find_order.png' %}"></i>
+                    </button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="existed_order" class="container container-fluid col col-sm-12 table-home">
+        <h3 class="col-12 text-center">Informacja o stanie zamówienia</h3>
+    <table class="table table-bordered">
+        <tr>
+            <td class="tbl1">Numer zamówienia:</td>
+            <td id="order_number" class="tbl2"></td>
+        </tr>
+        <tr>
+            <td class="tbl1">Numer telefonu:</td>
+            <td id="phone_number" class="tbl2"></td>
+        </tr>
+            <tr>
+                <td class="tbl1">Cena usługi:</td>
+                <td id="order_coast" class="tbl2"></td>
+            </tr>
+    </table>
+    </div>
+</div>
 
-                <div class="form-group">
-                    <label for="order_number">Numer zamówienia</label>
-                    {{ order_verification_form.order_number }}
-                </div>
-                <div class="form-group">
-                    <label for="phone_number">Numer telefonu</label>
-                    {{ order_verification_form.phone_number }}
-                </div>
-                <input type="submit" value="Szukaj">
-            </form>
 {% endblock %}
 
 {% block scripts %}
-    <script>
+<script>
 
-    /*hide elements*/
-        elements = ['#existed_order', '#order_does_not_exist'];
-        hide_elements(elements);
-
-        var order_number_val = '';
-        var phone_number_val = '';
-        var csrfmiddlewaretoken = '';
-        $('#order_verification').submit(function (e) {
-            e.preventDefault();
-            order_number_val = $('#id_order_number').val();
-            phone_number_val = $('#id_phone_number').val();
-            csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
-
-            $.ajax({
-            url:'{% url "ajax_order_verification" %}',
-            dataType:'json',
-            method:'POST',
-            data:{
-                'csrfmiddlewaretoken':csrfmiddlewaretoken,
-                'order_number': order_number_val,
-                'phone_number': phone_number_val,
-            },
-            success:function (json_response) {
-                if (json_response.is_existed) {
-                    $('#order_does_not_exist').toggle();
-                    $('#order_verification').slideUp();
-                    $('#order_number').html(json_response.order_number);
-                    $('#phone_number').html(json_response.phone_number);
-                    $('#order_coast').html(json_response.coast + ' zł');
-                    $('#existed_order').slideDown();
-                } else {
-                    $('#order_does_not_exist').show();
-                    $('#order_verification').trigger('reset');
-                }
-            },
-            error: function () {}
-        })
-        });
+/*hide elements*/
+    elements = ['#existed_order', '#order_does_not_exist'];
+    hide_elements(elements);
 
 
-    </script>
+    var order_number_val = '';
+    var phone_number_val = '';
+    var csrfmiddlewaretoken = '';
+    $('#order_verification').submit(function (e) {
+        e.preventDefault();
+        order_number_val = $('#id_order_number').val();
+        phone_number_val = $('#id_phone_number').val();
+        csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
+
+        $.ajax({
+        url:'{% url "ajax_order_verification" %}',
+        dataType:'json',
+        method:'POST',
+        data:{
+            'csrfmiddlewaretoken':csrfmiddlewaretoken,
+            'order_number': order_number_val,
+            'phone_number': phone_number_val,
+        },
+        success:function (json_response) {
+            console.log(json_response);
+            if (json_response.is_existed) {
+                $('#order_does_not_exist').slideUp();
+                $('#order_verification').trigger('reset');
+                $('#order_number').html(json_response.order_number);
+                $('#phone_number').html(json_response.phone_number);
+                if (json_response.coast){$('#order_coast').html(json_response.coast + ' zł');}
+                else if (json_response.status){$('#order_coast').html('w trakcie wypełnienia, prosze czekać na sms');}
+                $('#existed_order').slideDown();
+            } else {
+                $('#order_does_not_exist').show();
+                $('#order_verification').trigger('reset');
+                $('#existed_order').slideUp()
+            }
+        },
+        error: function () {}
+    })
+    });
+
+</script>
 {% endblock %}

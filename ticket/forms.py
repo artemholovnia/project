@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Form, CharField, IntegerField, NumberInput, TextInput, Textarea, \
-    CheckboxInput, Select
+    CheckboxInput, Select, DateField, DateInput
 from .models import *
 
 class TicketCreateForm(ModelForm):
@@ -47,5 +47,3 @@ class FindForm(Form):
 class CoastTicketForm(Form):
     coast = IntegerField(max_value=9999, label='Cena')
     sale = IntegerField(max_value=100, label='Zniżka')
-
-

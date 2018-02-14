@@ -13,22 +13,9 @@
     <link rel="stylesheet" href="{% static 'css/ticket.css' %}">
     <script src="{% static 'js/mask.js' %}"></script>
     <script src="{% static 'js/scripts.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 </head>
 <body>
-<div class="worker_auth">
-    {% if user.is_authenticated %}
-        <ul>
-            <li><a href="{% url 'all_tickets' %}">Gabinet pracownika ({{ user.username }})</a></li>
-            <li><a href="{% url 'logout' %}">Wyłogować</a></li>
-        </ul>
-    {% else %}
-        <ul>
-            <li><a href="{% url 'home_page' %}">Strona główna</a></li>
-            <li><a href="{% url 'login' %}">Zaloguj się</a></li>
-        </ul>
-    {% endif %}
-</div>
-
 {% block content %}{% endblock %}
 {% block scripts %}{% endblock %}
 </body>

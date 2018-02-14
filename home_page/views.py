@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, FormView
 from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
 from .forms import OrderVerificationForm
-from ticket.models import Ticket
+from ticket.models import Ticket, StatusForTicket
 from django.core import serializers
 
 LOGIN_URL = '/authentication/login/'
@@ -28,11 +28,14 @@ def ajax_order_verification(request):
         try:
             tickets = Ticket.objects.filter(phone_number=phone_number)
             for ticket in tickets:
-                if ticket.ticket_number.split('/')[0] == order_number and ticket.coast != 0:
+                if ticket.ticket_number.split('/')[0] == order_number:
                     json_response['is_existed'] = True
                     json_response['order_number'] = ticket.ticket_number
                     json_response['phone_number'] = ticket.phone_number
-                    json_response['coast'] = ticket.coast
+                    if ticket.status == get_object_or_404(StatusForTicket, short_title='gt') and ticket.coast != 0:
+                        json_response['coast'] = ticket.coast
+                    else:
+                        json_response['status'] = ticket.status.title
             return JsonResponse(json_response)
         except Ticket.DoesNotExist:
 
